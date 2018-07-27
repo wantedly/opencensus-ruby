@@ -129,7 +129,7 @@ describe OpenCensus::Trace::Integrations::RackMiddleware do
     let(:middleware) { OpenCensus::Trace::Integrations::RackMiddleware.new app, exporter: exporter }
     it "parses trace-context header from rack environment" do
       env = {
-        "HTTP_TRACE_CONTEXT" =>
+        "HTTP_TRACE_PARENT" =>
           "00-0123456789ABCDEF0123456789abcdef-0123456789ABCdef-01"
       }
       resp = middleware.call env
@@ -155,7 +155,7 @@ describe OpenCensus::Trace::Integrations::RackMiddleware do
 
     it "falls back to default for missing header" do
       env = {
-        "HTTP_TRACE_CONTEXT1" =>
+        "HTTP_TRACE_PARENT1" =>
           "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
       }
       resp = middleware.call env
@@ -168,7 +168,7 @@ describe OpenCensus::Trace::Integrations::RackMiddleware do
 
     it "falls back to default for invalid trace-context version" do
       env = {
-        "HTTP_TRACE_CONTEXT" =>
+        "HTTP_TRACE_PARENT" =>
           "ff-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
       }
       resp = middleware.call env
