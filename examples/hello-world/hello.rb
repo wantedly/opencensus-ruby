@@ -28,7 +28,22 @@ require "sinatra"
 
 # Install the Rack middleware to trace incoming requests.
 require "opencensus/trace/integrations/rack_middleware"
-use OpenCensus::Trace::Integrations::RackMiddleware
+
+# Register callback for set attribute in span
+
+def put_user_id_to_attribute span, env
+  span.put_attribute 'user_id', env['HTTP_X_USER_ID']
+end
+
+LONG_TASK_DURATION_KEY = 'LONG_TASK_DURATION_KEY'.freeze
+
+def put_long_task_duration_to_attribute span, env
+  span.put_attribute 'long_task_duration', env[LONG_TASK_DURATION_KEY]
+end
+
+use OpenCensus::Trace::Integrations::RackMiddleware,
+  on_start_span: ->(span,env) { put_user_id_to_attribute span, env },
+  on_finish_span: ->(span,env) { put_long_task_duration_to_attribute span, env }
 
 # Access the Faraday middleware which will be used to trace outgoing HTTP
 # requests.
@@ -52,7 +67,9 @@ get "/lengthy" do
   # You may instrument your code to create custom spans for long-running
   # operations.
   OpenCensus::Trace.in_span "long task" do
-    sleep rand
+    t = rand
+    sleep t
+    request.env[LONG_TASK_DURATION_KEY] = t
   end
 
   "Done!"

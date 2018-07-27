@@ -50,10 +50,14 @@ module OpenCensus
         # @param [#export] exporter The exported used to export captured spans
         #     at the end of the request. Optional: If omitted, uses the exporter
         #     in the current config.
+        # @param [Proc] on_start_span A callback evaluated after span created
+        # @param [Proc] on_finish_span A callback evaluated after span finished
         #
-        def initialize app, exporter: nil
+        def initialize app, exporter: nil, on_start_span: nil, on_finish_span: nil
           @app = app
           @exporter = exporter || OpenCensus::Trace.config.exporter
+          @on_start_span = on_start_span
+          @on_finish_span = on_finish_span
         end
 
         ##
@@ -77,9 +81,11 @@ module OpenCensus
             same_process_as_parent: false do |span_context|
             begin
               Trace.in_span get_path(env) do |span|
+                @on_start_span.call(span, env) if @on_start_span
                 start_request span, env
                 @app.call(env).tap do |response|
                   finish_request span, response
+                  @on_finish_span.call(span, env) if @on_finish_span
                 end
               end
             ensure
