@@ -147,12 +147,12 @@ module OpenCensus
         def start_request span, env
           span.kind = SpanBuilder::CLIENT
           req_method = env[:method]
-          span.put_attribute "/http/method", req_method if req_method
+          span.put_attribute "http.method", req_method if req_method
           url = env[:url]
-          span.put_attribute "/http/url", url if url
+          span.put_attribute "http.url", url if url
           body = env[:body]
           body_size = body.bytesize if body.respond_to? :bytesize
-          span.put_attribute "/rpc/request/size", body_size if body_size
+          span.put_attribute "http.request_size", body_size if body_size
 
           formatter = env[:formatter] || @formatter
           trace_context = formatter.serialize span.context.trace_context
@@ -166,12 +166,13 @@ module OpenCensus
         def finish_request span, env
           status = env[:status].to_i
           if status > 0
-            span.set_status status
-            span.put_attribute "/rpc/status_code", status
+            span.set_status \
+              OpenCensus::Trace::Status.convert_code_from_http status
+            span.put_attribute "http.status_code", status
           end
           body = env[:body]
           body_size = body.bytesize if body.respond_to? :bytesize
-          span.put_attribute "/rpc/response/size", body_size if body_size
+          span.put_attribute "http.response_size", body_size if body_size
         end
       end
     end

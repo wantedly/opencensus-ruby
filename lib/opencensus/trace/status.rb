@@ -22,6 +22,62 @@ module OpenCensus
     # which is used by [gRPC](https://github.com/grpc).
     class Status
       ##
+      # Status codes for use with `Status`
+      # There are defined by gRPC https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
+      OK                  = 0
+      CANCELLED           = 1
+      UNKNOWN             = 2
+      INVALID_ARGUMENT    = 3
+      DEADLINE_EXCEEDED   = 4
+      NOT_FOUND           = 5
+      ALREADY_EXISTS      = 6
+      PERMISSION_DENIED   = 7
+      RESOURCE_EXHAUSTED  = 8
+      FAILED_PRECONDITION = 9
+      ABORTED             = 10
+      OUT_OF_RANGE        = 11
+      UNIMPLEMENTED       = 12
+      INTERNAL            = 13
+      UNAVAILABLE         = 14
+      DATA_LOSS           = 15
+      UNAUTHENTICATED     = 16
+
+      # rubocop:disable Metrics/MethodLength
+
+      ##
+      # Convert HTTP status code to gRPC defined.
+      #
+      # @param [Integer] http_status_code HTTP status code
+      # @return [Integer] gRPC defined code
+      #
+      def self.convert_code_from_http http_status_code
+        case http_status_code
+        when 200..399
+          OK
+        when 400
+          INVALID_ARGUMENT
+        when 504
+          DEADLINE_EXCEEDED
+        when 404
+          NOT_FOUND
+        when 403
+          PERMISSION_DENIED
+        when 401
+          UNAUTHENTICATED
+        when 429
+          RESOURCE_EXHAUSTED
+        when 501
+          UNIMPLEMENTED
+        when 503
+          UNAVAILABLE
+        else
+          UNKNOWN
+        end
+      end
+
+      # rubocop:enable Metrics/MethodLength
+
+      ##
       # The status code.
       #
       # @return [Integer]

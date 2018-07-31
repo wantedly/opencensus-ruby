@@ -125,12 +125,12 @@ describe OpenCensus::Trace::Integrations::FaradayMiddleware do
 
       span.kind.must_equal :CLIENT
       span.status.wont_be_nil
-      span.status.code.must_equal 200
-      span.attributes["/http/method"].value.must_equal "POST"
-      span.attributes["/http/url"].value.must_equal "https://www.google.com/"
-      span.attributes["/rpc/request/size"].must_equal 5
-      span.attributes["/rpc/response/size"].must_equal 2
-      span.attributes["/rpc/status_code"].must_equal 200
+      span.status.code.must_equal 0
+      span.attributes["http.method"].value.must_equal "POST"
+      span.attributes["http.url"].value.must_equal "https://www.google.com/"
+      span.attributes["http.request_size"].must_equal 5
+      span.attributes["http.response_size"].must_equal 2
+      span.attributes["http.status_code"].must_equal 200
     end
 
     it "should not add body attributes if there is no body" do
@@ -143,8 +143,8 @@ describe OpenCensus::Trace::Integrations::FaradayMiddleware do
       middleware.call env
       span = root_context.build_contained_spans.first
 
-      span.attributes["/rpc/request/size"].must_be_nil
-      span.attributes["/rpc/response/size"].must_be_nil
+      span.attributes["http.request_size"].must_be_nil
+      span.attributes["http.response_size"].must_be_nil
     end
 
     it "should provide the correct trace context header" do

@@ -118,18 +118,20 @@ module OpenCensus
 
         def start_request span, env
           span.kind = SpanBuilder::SERVER
-          span.put_attribute "/http/host", get_host(env)
-          span.put_attribute "/http/url", get_url(env)
-          span.put_attribute "/http/method", env["REQUEST_METHOD"]
-          span.put_attribute "/http/client_protocol", env["SERVER_PROTOCOL"]
-          span.put_attribute "/http/user_agent", env["HTTP_USER_AGENT"]
-          span.put_attribute "/pid", ::Process.pid.to_s
-          span.put_attribute "/tid", ::Thread.current.object_id.to_s
+          span.put_attribute "http.host", get_host(env)
+          span.put_attribute "http.method", env["REQUEST_METHOD"]
+          span.put_attribute "http.path", get_path(env)
+          span.put_attribute "http.url", get_url(env)
+          span.put_attribute "http.client_protocol", env["SERVER_PROTOCOL"]
+          span.put_attribute "http.user_agent", env["HTTP_USER_AGENT"]
+          span.put_attribute "pid", ::Process.pid.to_s
+          span.put_attribute "tid", ::Thread.current.object_id.to_s
         end
 
         def finish_request span, response
           if response.is_a?(::Array) && response.size == 3
-            span.set_status response[0]
+            span.set_status \
+              OpenCensus::Trace::Status.convert_code_from_http response[0]
           end
         end
       end
