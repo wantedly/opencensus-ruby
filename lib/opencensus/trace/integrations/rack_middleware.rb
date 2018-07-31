@@ -43,6 +43,13 @@ module OpenCensus
           Formatters::TraceContext.new
         ].freeze
 
+        OpenCensus::Trace.configure do |c|
+          c.add_config! :rack do |rc|
+            rc.add_option! :on_start_span, nil
+            rc.add_option! :on_finish_span, nil
+          end
+        end
+
         ##
         # Create the Rack middleware.
         #
@@ -62,6 +69,13 @@ module OpenCensus
           @exporter = exporter || OpenCensus::Trace.config.exporter
           @on_start_span = on_start_span
           @on_finish_span = on_finish_span
+
+          # rubocop:disable Metrics/LineLength
+
+          @on_start_span = OpenCensus::Trace.configure.rack.on_start_span if @on_start_span.nil?
+          @on_finish_span = OpenCensus::Trace.configure.rack.on_finish_span if @on_finish_span.nil?
+
+          # rubocop:enable Metrics/LineLength
         end
 
         ##
