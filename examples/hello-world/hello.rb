@@ -32,18 +32,20 @@ require "opencensus/trace/integrations/rack_middleware"
 # Register callback for set attribute in span
 
 def put_user_id_to_attribute span, env
-  span.put_attribute 'user_id', env['HTTP_X_USER_ID']
+  span.put_attribute "user_id", env["HTTP_X_USER_ID"]
 end
 
-LONG_TASK_DURATION_KEY = 'LONG_TASK_DURATION_KEY'.freeze
+LONG_TASK_DURATION_KEY = "LONG_TASK_DURATION_KEY".freeze
 
 def put_long_task_duration_to_attribute span, env
-  span.put_attribute 'long_task_duration', env[LONG_TASK_DURATION_KEY]
+  span.put_attribute "long_task_duration", env[LONG_TASK_DURATION_KEY]
 end
 
 use OpenCensus::Trace::Integrations::RackMiddleware,
-  on_start_span: ->(span,env) { put_user_id_to_attribute span, env },
-  on_finish_span: ->(span,env) { put_long_task_duration_to_attribute span, env }
+    on_start_span: ->(span, env) { put_user_id_to_attribute span, env },
+    on_finish_span: lambda do |span, env|
+      put_long_task_duration_to_attribute span, env
+    end
 
 # Access the Faraday middleware which will be used to trace outgoing HTTP
 # requests.

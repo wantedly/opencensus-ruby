@@ -53,7 +53,11 @@ module OpenCensus
         # @param [Proc] on_start_span A callback evaluated after span created
         # @param [Proc] on_finish_span A callback evaluated after span finished
         #
-        def initialize app, exporter: nil, on_start_span: nil, on_finish_span: nil
+        def initialize \
+            app,
+            exporter: nil,
+            on_start_span: nil,
+            on_finish_span: nil
           @app = app
           @exporter = exporter || OpenCensus::Trace.config.exporter
           @on_start_span = on_start_span
@@ -68,7 +72,7 @@ module OpenCensus
         #     response code, a Hash of the response headers, and the response
         #     body which must respond to `each`.
         #
-        def call env
+        def call env # rubocop:disable Metrics/MethodLength
           formatter = AUTODETECTABLE_FORMATTERS.detect do |f|
             env.key? f.rack_header_name
           end

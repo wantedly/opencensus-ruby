@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
 gem "faraday", "~> 0.14"
-gem "opencensus", git: 'git@github.com:wantedly/opencensus-ruby.git', branch: 'master'
+gem "opencensus",
+    git: "git@github.com:wantedly/opencensus-ruby.git",
+    branch: "master"
 gem "sinatra", "~> 2.0"
