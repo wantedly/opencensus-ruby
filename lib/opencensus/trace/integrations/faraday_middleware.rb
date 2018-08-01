@@ -150,6 +150,7 @@ module OpenCensus
           span.put_attribute "http.method", req_method if req_method
           url = env[:url]
           span.put_attribute "http.url", url if url
+          span.put_attribute "http.path", url.path if url
           body = env[:body]
           body_size = body.bytesize if body.respond_to? :bytesize
           span.put_attribute "http.request_size", body_size if body_size
