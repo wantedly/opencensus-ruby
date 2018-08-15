@@ -150,6 +150,7 @@ module OpenCensus
           if response.is_a?(::Array) && response.size == 3
             span.set_status \
               OpenCensus::Trace::Status.convert_code_from_http response[0]
+            span.put_attribute "http.status_code", response[0]
           end
         end
       end
