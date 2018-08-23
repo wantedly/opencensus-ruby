@@ -96,7 +96,6 @@ module OpenCensus
         # `trace.notifications.events` configuration.
         #
         DEFAULT_NOTIFICATION_EVENTS = [
-          "sql.active_record",
           "render_template.action_view",
           "send_file.action_controller",
           "send_data.action_controller",
