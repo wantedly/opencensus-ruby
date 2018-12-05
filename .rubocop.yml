@@ -24,6 +24,8 @@ Metrics/ClassLength:
   Enabled: false
 Layout/EmptyLines:
   Enabled: false
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
 Style/EmptyElse:
   Enabled: false
 Metrics/CyclomaticComplexity:
