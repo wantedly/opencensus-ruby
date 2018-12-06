@@ -16,4 +16,5 @@ deploy:
   email: chingor@google.com # To satisfy the CLA check, replace this with bot email.
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   on:
+    repo: census-instrumentation/opencensus-ruby
     branch: master
