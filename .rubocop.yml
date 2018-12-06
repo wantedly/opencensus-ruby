@@ -18,11 +18,15 @@ Style/MethodDefParentheses:
   EnforcedStyle: require_no_parentheses
 Style/NumericLiterals:
   Enabled: false
+Style/MutableConstant:
+  Enabled: false
 Layout/SpaceAroundOperators:
   Enabled: false
 Metrics/ClassLength:
   Enabled: false
 Layout/EmptyLines:
+  Enabled: false
+Layout/EmptyLineAfterGuardClause:
   Enabled: false
 Style/EmptyElse:
   Enabled: false
